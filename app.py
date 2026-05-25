@@ -4,13 +4,9 @@ import numpy as np
 from keras.models import load_model
 from keras.preprocessing import image
 
-print("Starting app...")
+model = load_model("deepfake_model.keras")
 
 IMG_SIZE = 128
-
-print("Loading model...")
-model = load_model("deepfake_model.keras")
-print("Model loaded successfully")
 
 
 def predict(img):
@@ -32,8 +28,6 @@ def predict(img):
         return f"Error: {str(e)}"
 
 
-print("Creating Gradio interface...")
-
 app = gr.Interface(
     fn=predict,
     inputs=gr.Image(type="pil"),
@@ -42,12 +36,10 @@ app = gr.Interface(
     description="Upload an image to check whether it is REAL or FAKE."
 )
 
-print("Launching app...")
+port = int(os.environ.get("PORT", 10000))
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 7860))
-
-    app.launch(
-        server_name="0.0.0.0",
-        server_port=port
-    )
+app.launch(
+    server_name="0.0.0.0",
+    server_port=port,
+    show_error=True
+)
