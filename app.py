@@ -1,17 +1,21 @@
 import os
-import time
 import gradio as gr
 import numpy as np
 from keras.models import load_model
 from keras.preprocessing import image
 
-model = load_model("deepfake_model.keras")
-
 IMG_SIZE = 128
+model = None
 
 
 def predict(img):
+    global model
+
     try:
+        # load model only when first request comes
+        if model is None:
+            model = load_model("deepfake_model.keras")
+
         img = img.resize((IMG_SIZE, IMG_SIZE))
 
         img_array = image.img_to_array(img)
@@ -39,15 +43,10 @@ app = gr.Interface(
 
 port = int(os.environ.get("PORT", 10000))
 
+print(f"Starting Gradio on port {port}")
+
 app.launch(
     server_name="0.0.0.0",
     server_port=port,
-    share=False,
-    inbrowser=False,
-    debug=True,
-    show_error=True,
-    prevent_thread_lock=True
+    share=False
 )
-
-while True:
-    time.sleep(100)
