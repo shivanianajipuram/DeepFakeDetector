@@ -1,4 +1,5 @@
 import os
+import time
 import gradio as gr
 import numpy as np
 from keras.models import load_model
@@ -41,5 +42,12 @@ port = int(os.environ.get("PORT", 10000))
 app.launch(
     server_name="0.0.0.0",
     server_port=port,
-    show_error=True
+    share=False,
+    inbrowser=False,
+    debug=True,
+    show_error=True,
+    prevent_thread_lock=True
 )
+
+while True:
+    time.sleep(100)
