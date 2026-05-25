@@ -3,30 +3,23 @@ import numpy as np
 from keras.models import load_model
 from keras.preprocessing import image
 
-
-
-
 model = load_model("deepfake_model.keras")
 
-# Image size used during training
 IMG_SIZE = 128
 
 
-
 def predict(img):
-
     try:
-
-        # Resize image
+        # Resize
         img = img.resize((IMG_SIZE, IMG_SIZE))
 
-        # Convert image to array
+        # Convert to array
         img_array = image.img_to_array(img)
 
-        # Normalize image
+        # Normalize
         img_array = img_array / 255.0
 
-        # Add batch dimension
+        # Batch dimension
         img_array = np.expand_dims(img_array, axis=0)
 
         # Predict
@@ -34,42 +27,27 @@ def predict(img):
 
         print("Prediction Value:", prediction)
 
-        
-
         if prediction > 0.5:
-
-            confidence = prediction * 100
-
-            return f"""
-REAL IMAGE
-"""
+            return "REAL IMAGE"
 
         else:
-
-            confidence = (1 - prediction) * 100
-
-            return f"""
-FAKE IMAGE
-
-"""
+            return "FAKE IMAGE"
 
     except Exception as e:
-
         return f"Error: {str(e)}"
 
 
 app = gr.Interface(
     fn=predict,
-
     inputs=gr.Image(type="pil"),
-
     outputs=gr.Textbox(label="Prediction"),
-
     title="Deepfake Detector",
-
     description="Upload an image to check whether it is REAL or FAKE."
 )
 
 
-
-app.launch()
+if __name__ == "__main__":
+    app.launch(
+        server_name="0.0.0.0",
+        server_port=7860
+    )
