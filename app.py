@@ -1,8 +1,8 @@
 import os
 import gradio as gr
 import numpy as np
-import tensorflow as tf
-from PIL import Image
+from keras.models import load_model
+from keras.preprocessing import image
 
 IMG_SIZE = 128
 model = None
@@ -12,20 +12,16 @@ def predict(img):
     global model
 
     try:
-        if img is None:
-            return "Please upload an image."
-
-        # load model only once
         if model is None:
-            model = tf.keras.models.load_model("deepfake_model.keras")
+            model = load_model("deepfake_model.keras")
 
-        img = img.convert("RGB")
         img = img.resize((IMG_SIZE, IMG_SIZE))
 
-        img_array = np.array(img) / 255.0
+        img_array = image.img_to_array(img)
+        img_array = img_array / 255.0
         img_array = np.expand_dims(img_array, axis=0)
 
-        prediction = model.predict(img_array, verbose=0)[0][0]
+        prediction = model.predict(img_array)[0][0]
 
         if prediction > 0.5:
             return "REAL IMAGE"
@@ -38,7 +34,7 @@ def predict(img):
 
 app = gr.Interface(
     fn=predict,
-    inputs=gr.Image(type="pil", label="Upload Image"),
+    inputs=gr.Image(type="pil"),
     outputs=gr.Textbox(label="Prediction"),
     title="Deepfake Detector",
     description="Upload an image to check whether it is REAL or FAKE."
@@ -50,5 +46,5 @@ if __name__ == "__main__":
     app.launch(
         server_name="0.0.0.0",
         server_port=port,
-        share=True
+        share=False
     )
