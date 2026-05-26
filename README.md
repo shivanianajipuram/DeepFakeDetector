@@ -148,7 +148,6 @@ Project/
 ├── best_deepfake_model.h5
 ├── requirements.txt
 ├── .gitignore
-│
 └── Dataset/
     ├── train/
     │   ├── Real/
@@ -242,8 +241,12 @@ python train.py
 ```
 
 ---
+## 4. Convert model .keras to .h5
+```bash
+python convert_model.py
+```
 
-## 4. Run Streamlit App
+## 5. Run Streamlit App
 
 ```bash
 streamlit run app.py
