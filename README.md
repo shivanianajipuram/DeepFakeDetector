@@ -251,7 +251,7 @@ python convert_model.py
 ```bash
 streamlit run app.py
 ```
-
+## NOTE- Upload Image from inputs/ folder inside cloned repository
 ---
 
 # Requirements
@@ -286,4 +286,14 @@ https://deepfakedetector-1.onrender.com/
 
 ## OUTPUTS-
 The Streamlit Page looks like-
+
+<img width="1308" height="721" alt="image" src="https://github.com/user-attachments/assets/2176e068-6eaf-48cb-a8f6-25363547b905" />
+---
+<img width="1324" height="713" alt="image" src="https://github.com/user-attachments/assets/088d3f63-8911-4ab1-a7ba-86547efbddea" />
+---
+<img width="1324" height="722" alt="image" src="https://github.com/user-attachments/assets/18422d81-e7e2-480c-b16e-b89c784dea36" />
+---
+<img width="1297" height="716" alt="image" src="https://github.com/user-attachments/assets/710a50d6-7cdb-4c85-8b98-4b27d289aaf3" />
+---
+<img width="1315" height="710" alt="image" src="https://github.com/user-attachments/assets/a2a3d6fb-885a-4051-8518-cd0b927c2dba" />
 
