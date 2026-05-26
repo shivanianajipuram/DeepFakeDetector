@@ -235,7 +235,7 @@ pip install -r requirements.txt
 ---
 
 ## 3. Train Model
-
+before running train.py check the dataset path in train.py and try to change if incorrect
 ```bash
 python train.py
 ```
@@ -283,3 +283,7 @@ PYTHON_VERSION = 3.10.13
 ```bash
 https://deepfakedetector-1.onrender.com/
 ```
+
+## OUTPUTS-
+The Streamlit Page looks like-
+
