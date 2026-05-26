@@ -5,7 +5,7 @@ from keras.preprocessing import image
 from PIL import Image
 
 # Load model
-model = load_model("deepfake_model.keras")
+model = load_model("deepfake_model.h5")
 
 # Same size used during training
 IMG_SIZE = 128
