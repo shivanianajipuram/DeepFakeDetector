@@ -255,7 +255,7 @@ NOTE- Upload Image from inputs/ folder inside cloned repository
 
 
 Deployment Notes
-For deployment platforms like Render:
+For deployment platforms Render:
 
 Environment Variable
 PYTHON_VERSION = 3.10.13
