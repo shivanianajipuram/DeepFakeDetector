@@ -15,8 +15,8 @@ IMG_SIZE = 128
 BATCH_SIZE = 64
 EPOCHS = 5
 
-TRAIN_PATH = r"archive\Dataset\train"
-TEST_PATH = r"archive\Dataset\test"
+TRAIN_PATH = r"C:\Users\Home\Downloads\archive.zip\Dataset\train"
+TEST_PATH = r"C:\Users\Home\Downloads\archive.zip\Dataset\test"
 
 # DATA GENERATORS
 
