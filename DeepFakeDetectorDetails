@@ -1,0 +1,261 @@
+Deepfake Detection System
+Project Description
+This is a deep learning-based web application that detects whether an uploaded image is REAL or FAKE (Deepfake).
+The system uses Transfer Learning with MobileNetV2 for efficient and accurate image classification.
+Download dataset
+https://www.kaggle.com/datasets/manjilkarki/deepfake-and-real-images
+unzip the file
+copy+paste the path in train.py 
+
+Dataset structure:
+Dataset/
+│
+├── train/
+│   ├── Real/
+│   └── Fake/
+│
+└── test/
+    ├── Real/
+    └── Fake/
+
+File Structure
+Project/
+│
+├── app.py
+├── train.py
+├── best_deepfake_model.h5
+├── requirements.txt
+├── .gitignore
+└── Dataset/
+    ├── train/
+    │   ├── Real/
+    │   └── Fake/
+    │
+    └── test/
+        ├── Real/
+        └── Fake/
+
+Prediction
+REAL IMAGE
+or
+FAKE IMAGE
+
+
+
+codes- app.py
+import streamlit as st
+import numpy as np
+from keras.models import load_model
+from keras.preprocessing import image
+from PIL import Image
+
+# Load model
+model = load_model("deepfake_model.h5")
+
+# Same size used during training
+IMG_SIZE = 128
+
+# Streamlit page settings
+st.set_page_config(page_title="Deepfake Detector")
+
+st.title("Deepfake Detector")
+
+uploaded_file = st.file_uploader(
+    "Upload Image",
+    type=["jpg", "jpeg", "png"]
+)
+
+if uploaded_file is not None:
+
+    img = Image.open(uploaded_file).convert("RGB")
+
+    st.image(img, width=300)
+
+    # Detect button
+    if st.button("Detect"):
+
+        # Resize image
+        img_resized = img.resize((IMG_SIZE, IMG_SIZE))
+
+        # Convert to array
+        img_array = image.img_to_array(img_resized)
+
+        # Normalize
+        img_array = img_array / 255.0
+
+        # Add batch dimension
+        img_array = np.expand_dims(img_array, axis=0)
+
+        # Predict
+        prediction = model.predict(img_array)[0][0]
+
+        # Output
+        if prediction > 0.5:
+            st.success("REAL IMAGE")
+        else:
+            st.error("FAKE IMAGE")
+        
+code- train.py file1
+# train.py
+
+import tensorflow as tf
+from keras.preprocessing.image import ImageDataGenerator
+from keras.applications import MobileNetV2
+from keras.models import Sequential
+from keras.layers import GlobalAveragePooling2D, Dense, Dropout
+from keras.callbacks import EarlyStopping
+from keras.optimizers import Adam
+
+# SETTINGS
+
+
+IMG_SIZE = 128
+BATCH_SIZE = 64
+EPOCHS = 5
+
+# mention your dataset path
+TRAIN_PATH = r"archive\Dataset\train"
+TEST_PATH = r"archive\Dataset\test"
+
+# DATA GENERATORS
+
+
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=20,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    width_shift_range=0.1,
+    height_shift_range=0.1
+)
+
+test_datagen = ImageDataGenerator(
+    rescale=1./255
+)
+
+train_data = train_datagen.flow_from_directory(
+    TRAIN_PATH,
+    target_size=(IMG_SIZE, IMG_SIZE),
+    batch_size=BATCH_SIZE,
+    class_mode='binary'
+)
+
+test_data = test_datagen.flow_from_directory(
+    TEST_PATH,
+    target_size=(IMG_SIZE, IMG_SIZE),
+    batch_size=BATCH_SIZE,
+    class_mode='binary',
+    shuffle=False
+)
+
+# MODEL
+
+
+base_model = MobileNetV2(
+    input_shape=(128,128,3),
+    include_top=False,
+    weights='imagenet',
+    alpha=0.35
+)
+
+# Freeze pretrained layers
+base_model.trainable = False
+
+model = Sequential([
+
+    base_model,
+
+    GlobalAveragePooling2D(),
+
+    Dropout(0.3),
+
+    Dense(1, activation='sigmoid')
+])
+
+
+# COMPILE MODEL
+
+
+model.compile(
+    optimizer=Adam(learning_rate=0.0001),
+    loss='binary_crossentropy',
+    metrics=['accuracy']
+)
+
+
+# CALLBACKS
+
+
+early_stop = EarlyStopping(
+    monitor='val_accuracy',
+    patience=2,
+    restore_best_weights=True
+)
+
+# TRAIN MODEL
+
+
+print("\nTraining Started...\n")
+
+history = model.fit(
+    train_data,
+    validation_data=test_data,
+    epochs=EPOCHS,
+    callbacks=[early_stop]
+)
+
+# TEST MODEL
+
+
+print("\nTesting Model...\n")
+
+train_loss, train_acc = model.evaluate(train_data)
+
+test_loss, test_acc = model.evaluate(test_data)
+
+print(f"\nTrain Accuracy: {train_acc*100:.2f}%")
+
+print(f"Test Accuracy : {test_acc*100:.2f}%")
+
+
+# SAVE MODEL
+
+model.save("deepfake_model.keras")
+
+print("\nModel Saved Successfully!")
+
+
+code- file3- convert-model.py
+from keras.models import load_model
+
+# Load existing keras model
+model = load_model("deepfake_model.keras")
+
+# Save as h5
+model.save("deepfake_model.h5")
+
+print("Converted Successfully!")
+
+Steps to be followed- 
+1. Clone Repository Locally
+git clone https://github.com/shivanianajipuram/DeepFakeDetector.git
+
+cd deepfake-detector
+2. Install Dependencies
+pip install -r requirements.txt
+3. Train Model
+before running train.py check the dataset path in train.py and try to change if incorrect
+
+python train.py
+4. Convert model .keras to .h5
+python convert_model.py
+5. Run Streamlit App
+streamlit run app.py
+NOTE- Upload Image from inputs/ folder inside cloned repository
+
+
+Deployment Notes
+For deployment platforms like Render:
+
+Environment Variable
+PYTHON_VERSION = 3.10.13
