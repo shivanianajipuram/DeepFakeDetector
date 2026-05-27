@@ -7,6 +7,8 @@ https://www.kaggle.com/datasets/manjilkarki/deepfake-and-real-images
 unzip the file
 copy+paste the path in train.py 
 
+
+Accuracy around-90%
 Dataset structure:
 Dataset/
 │
